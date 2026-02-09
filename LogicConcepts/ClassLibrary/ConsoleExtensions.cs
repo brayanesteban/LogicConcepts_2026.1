@@ -13,5 +13,15 @@
             throw new Exception("el valor ingresado no es un numero valido");
         }
 
+        public static string? GetValidOptions(string message, List<string> options)
+        {
+            Console.Write(message);
+            var answer = Console.ReadLine();
+            if (options.Any(x => x.Equals(answer, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                return answer;
+            }
+            return null;
+        }
     }
 }
