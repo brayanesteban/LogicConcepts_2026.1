@@ -1,5 +1,8 @@
 ﻿using Shared;
 
+var answer = String.Empty;
+var options = new List<string> { "si", "no" };
+
 do
 {
     Console.WriteLine("Ingrese tres numeros para ordenarlos de mayor a menor");
@@ -52,4 +55,11 @@ do
                 Console.WriteLine($"El mayor es: {number3} el medio es {number2} y el menor es {number1}");
             }
         }
-    } while (true); 
+    do
+    {
+        answer = ConsoleExtensions.GetValidOptions("desea ingresar otro numero? (si/no): ", options);
+    } while (!options.Any(x => string.Equals(x, answer, StringComparison.CurrentCultureIgnoreCase)));
+
+} while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
+
+Console.WriteLine("Game Over");
