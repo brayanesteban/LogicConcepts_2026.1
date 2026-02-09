@@ -1,12 +1,11 @@
 ﻿
 using Shared;
 
-var response = string.Empty;
+var answer = String.Empty;
+var options = new List<string> { "si", "no" };
 do
 
 {
-    try
-    {
         Console.WriteLine("Ingrese 3 numeros diferentes: ");
 
         var number1 = ConsoleExtensions.GetInt("ingrese primer numero: ");
@@ -25,14 +24,12 @@ do
         {
             Console.WriteLine($"El numero mayor es: {number3}");
         }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
 
+        do
+        {
+            answer = ConsoleExtensions.GetValidOptions("desea ingresar otro numero? (si/no): ", options);
+        } while (!options.Any(x => string.Equals(x, answer, StringComparison.CurrentCultureIgnoreCase)));
 
+    } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase)) ;
 
-    Console.Write("desea continuar S/N ");
-    response = Console.ReadLine()!.ToUpper();
-} while (response == "S");
+    Console.WriteLine("Game Over" );

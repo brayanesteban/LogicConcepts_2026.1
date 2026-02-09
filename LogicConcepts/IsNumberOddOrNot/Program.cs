@@ -23,3 +23,5 @@ do
 
 
 } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
+
+Console.WriteLine("Game Over"); 
