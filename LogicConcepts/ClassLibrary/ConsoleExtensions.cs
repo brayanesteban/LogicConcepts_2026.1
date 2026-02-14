@@ -25,6 +25,19 @@
             return 0;
         }
 
+        public static bool GetBool(string message)
+        {
+            var options = new List<string> { "s", "n" };
+            Console.WriteLine(message);
+            var text = Console.ReadLine();
+
+            if (text!.ToLower() == "s")
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static decimal GetDecimal(string message)
         {
             Console.Write(message);
