@@ -81,9 +81,9 @@ do
         answer = ConsoleExtensions.GetValidOptions("desea iniciar otra vez? (si/no): ", options);
     } while (!options.Any(x => string.Equals(x, answer, StringComparison.CurrentCultureIgnoreCase)));
 
-    Console.WriteLine("Game Over");
-
 } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
+
+Console.WriteLine("Game Over");
 
 float CalculateExhibitionsCost(string productType, string conservation, string storageMedium, float storageCost)
 {
