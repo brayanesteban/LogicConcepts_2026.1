@@ -26,8 +26,8 @@ do
 
     Console.WriteLine($"tarifa: {fee}");
     Console.WriteLine($"promocion: {promotion}");
-    Console.WriteLine($"descuento: {discount}");
-    Console.WriteLine($"total a pagar: {total}");
+    Console.WriteLine($"descuento: {discount:C2}");
+    Console.WriteLine($"total a pagar: {total:C2}");
 
     do
     {

@@ -52,9 +52,9 @@ do
     }
     //Calculos
 
-    var storageCost = CalculateStorageCost(cost, productType, conservation, conservationPeriod, storagePeriod);
+    var storageCost = CalculateStorageCost(cost, productType, conservation, conservationPeriod, storagePeriod, volume);
     var depretationPorcentage = CalculateDepretationPercentage(productType, conservation, conservationPeriod, storagePeriod);
-    var exhibitionCost = storageCost * 0.1f;
+    var exhibitionCost = CalculateExhibitionsCost(productType, conservation, storageMedium, storageCost);
     var productValue = (cost + storageCost + exhibitionCost) * depretationPorcentage; 
     float saleValue;
 
@@ -70,9 +70,11 @@ do
 
 
     Console.WriteLine($"Costo almacenamiento: {storageCost}");
+    Console.WriteLine($"Porcentaje de depreciación: {depretationPorcentage:P2}");
     Console.WriteLine($"Costo exhibición: {exhibitionCost}");
     Console.WriteLine($"Valor producto base: {productValue}");
     Console.WriteLine($"Valor de venta: {saleValue}");
+    
 
     do
     {
@@ -83,12 +85,44 @@ do
 
 } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
 
-float CalculateDepretationPercentage(string productType, string conservation, int conservationPeriod, int storagePeriod)
+float CalculateExhibitionsCost(string productType, string conservation, string storageMedium, float storageCost)
 {
-    
+    if (productType == "P")
+    {
+        if (conservation == "F" && storageMedium == "N")
+        {
+            return storageCost * 2;
+        }
+        else if (conservation == "F" && storageMedium == "C")
+        {
+            return storageCost;
+        }
+    }
+    if (productType == "N")
+    {
+        if (storageMedium == "E")
+        {
+            return storageCost * 0.05f;
+        }
+        else if (storageMedium == "G")
+        {
+            return storageCost * 0.07f;
+        }
+    }
+
+    return 0;
 }
 
-float CalculateStorageCost(float cost, string productType, string conservation, int conservationPeriod, int storagePeriod)
+float CalculateDepretationPercentage(string productType, string conservation, int conservationPeriod, int storagePeriod)
+{
+    if (storagePeriod < 30)
+        return 0.95f;
+    else if (storagePeriod >= 30)
+        return 0.85f;
+    return 0;
+}
+
+float CalculateStorageCost(float cost, string productType, string conservation, int conservationPeriod, int storagePeriod, int volume)
 {
     if (productType == "P")
     {
@@ -111,7 +145,16 @@ float CalculateStorageCost(float cost, string productType, string conservation, 
         }
     }
 
+    if (productType == "N")
+    {
+        if (volume < 50)
+            return cost * 0.20f;
+       else
+            return cost * 0.10f;
+    }
+
     return 0;
+
 }
 
 
