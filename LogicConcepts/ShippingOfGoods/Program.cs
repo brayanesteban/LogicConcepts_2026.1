@@ -12,20 +12,17 @@ do
     var paymentMethod = ConsoleExtensions.GetString("Tipo de pago [E]fectivo [T]arjeta ");
 
     var fee = CalculateValue(weights);
-    var promotion = CalculatePromotions(fee, commodity, monday, paymentMethod);
+    var discount = CalculateDiscount(fee, commodity);
 
-    decimal discount = 0;
-    decimal total;
+    decimal promotion = 0;
 
-    if (promotion > 0)
+    if (discount == 0)
     {
-        total = fee - promotion;
+        promotion = CalculatePromotions(fee, commodity, monday, paymentMethod);
     }
-    else
-    {
-        discount = CalculateDiscount(fee, commodity);
-        total = fee - discount;
-    }
+
+    var total = fee - discount - promotion;
+
 
     Console.WriteLine($"tarifa: {fee}");
     Console.WriteLine($"promocion: {promotion}");
@@ -92,15 +89,17 @@ decimal CalculateDiscount(decimal fee, decimal commodity)
 
 decimal CalculatePromotions(decimal fee, decimal commodity, string monday, string paymentMethod)
 {
-    if (monday.Equals("s", StringComparison.CurrentCultureIgnoreCase)
-            && paymentMethod.Equals("t", StringComparison.CurrentCultureIgnoreCase))
+    if (monday.Equals("s", StringComparison.CurrentCultureIgnoreCase))
     {
-        return fee * 0.50M;
-    }
-    else if (paymentMethod.Equals("e", StringComparison.CurrentCultureIgnoreCase)
-             && commodity > 1000000)
-    {
-        return fee * 0.40M;
+        if (paymentMethod.Equals("t", StringComparison.CurrentCultureIgnoreCase))
+        {
+            return fee * 0.50M;
+        }
+        else if (paymentMethod.Equals("e", StringComparison.CurrentCultureIgnoreCase)
+                 && commodity > 1000000)
+        {
+            return fee * 0.40M;
+        }
     }
 
     return 0;
