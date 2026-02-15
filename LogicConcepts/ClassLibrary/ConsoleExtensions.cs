@@ -66,5 +66,25 @@
             Console.Write(message);
             return Console.ReadLine() ?? "";
         }
+
+        public static string GetOption(string message, List<string> options)
+        {
+            while (true)
+            {
+                Console.Write(message);
+                var answer = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(answer) &&
+                    options.Any(x => x.Equals(answer, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    return answer.ToUpper();
+                }
+
+                Console.WriteLine("Opción no válida. Intente nuevamente.");
+            }
+        }
+
     }
+
 }
+
