@@ -53,7 +53,7 @@ do
     //Calculos
 
     var storageCost = CalculateStorageCost(cost, productType, conservation, conservationPeriod, storagePeriod, volume);
-    var depretationPorcentage = CalculateDepretationPercentage(productType, conservation, conservationPeriod, storagePeriod);
+    var depretationPorcentage = CalculateDepretationPercentage(storagePeriod);
     var exhibitionCost = CalculateExhibitionsCost(productType, conservation, storageMedium, storageCost);
     var productValue = (cost + storageCost + exhibitionCost) * depretationPorcentage; 
     float saleValue;
@@ -113,7 +113,7 @@ float CalculateExhibitionsCost(string productType, string conservation, string s
     return 0;
 }
 
-float CalculateDepretationPercentage(string productType, string conservation, int conservationPeriod, int storagePeriod)
+float CalculateDepretationPercentage(int storagePeriod)
 {
     if (storagePeriod < 30)
         return 0.95f;
