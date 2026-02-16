@@ -67,18 +67,84 @@ do
 
 float CalculateparcelsIn(int numParcelsBelow10, int numParcelsbetween10AndLess20, int numParcelsAbove20, string route)
 {
- if (route == "1")
     {
-        if numParcelsBelow10 < 50
-              return 100;
-        else if numParcelsBelow10 50 >= numParcelsBelow10 <= 100
-              return 120;
-        else if numParcelsBelow10 101 > numParcelsBelow10 < 150
-              return 200;
-        else if numParcelsBelow10 150 >= numParcelsBelow10 < 200
-              return 250;
-        else 
-              return 300;
+        int totalPackages = numParcelsBelow10 +
+                            numParcelsbetween10AndLess20 +
+                            numParcelsAbove20;
+
+        float priceBelow10 = 0;
+        float priceBetween10And20 = 0;
+        float priceAbove20 = 0;
+
+        bool isRoute12 = route == "1" || route == "2";
+
+        if (totalPackages < 50)
+        {
+            if (isRoute12)
+            {
+                priceBelow10 = 100;
+                priceBetween10And20 = 120;  
+                priceAbove20 = 120;         
+            }
+            else
+            {
+                priceBelow10 = 130;
+                priceBetween10And20 = 140;
+                priceAbove20 = 170;
+            }
+        }
+        else if (totalPackages <= 100)
+        {
+            if (isRoute12)
+            {
+                priceBelow10 = 120;
+                priceBetween10And20 = 140;
+                priceAbove20 = 140;
+            }
+            else
+            {
+                priceBelow10 = 160;
+                priceBetween10And20 = 180;
+                priceAbove20 = 210;
+            }
+        }
+        else if (totalPackages <= 130)
+        {
+            if (isRoute12)
+            {
+                priceBelow10 = 150;
+                priceBetween10And20 = 160;
+                priceAbove20 = 160;
+            }
+            else
+            {
+                priceBelow10 = 175;
+                priceBetween10And20 = 200;
+                priceAbove20 = 250;
+            }
+        }
+        else
+        {
+            if (isRoute12)
+            {
+                priceBelow10 = 160;
+                priceBetween10And20 = 180;
+                priceAbove20 = 180;
+            }
+            else
+            {
+                priceBelow10 = 200;
+                priceBetween10And20 = 250;
+                priceAbove20 = 300;
+            }
+        }
+
+        float total =
+            (numParcelsBelow10 * priceBelow10) +
+            (numParcelsbetween10AndLess20 * priceBetween10And20) +
+            (numParcelsAbove20 * priceAbove20);
+
+        return total;
     }
 
 }
