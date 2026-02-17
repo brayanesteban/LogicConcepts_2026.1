@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using System.Runtime.Intrinsics.X86;
 
-var answer = String.Empty;
+var answer = string.Empty;
 var options = new List<string> { "si", "no" };
 
 do
@@ -28,38 +28,25 @@ do
     }
     var numTrips = ConsoleExtensions.GetInt("Numero de viajes................................: ");
     var numPassagers = ConsoleExtensions.GetInt("Numero de pasajeros total.......................: ");
-    var numParcelsBelow10 = ConsoleExtensions.GetInt("Número de encomiendas de menos de 10Kg..........: ");
-    var numParcelsbetween10AndLess20 = ConsoleExtensions.GetInt("Número de encomiendas entre 10Kg y menos de 20Kg:");
-    var numParcelsAbove20 = ConsoleExtensions.GetInt("Número de encomiendas de 20Kg o más.............: ");
+    var packages10 = ConsoleExtensions.GetInt("Número de encomiendas de menos de 10Kg..........: ");
+    var packages10to20 = ConsoleExtensions.GetInt("Número de encomiendas entre 10Kg y menos de 20Kg:");
+    var packages20plus = ConsoleExtensions.GetInt("Número de encomiendas de 20Kg o más.............: ");
 
-    //Calculos
-
-    float routeValue = 0;
-
-    if (route == "1")
-        routeValue = 500000;
-    else if (route == "2")
-        routeValue = 600000;
-    else if (route == "3")
-        routeValue = 800000;
-    else if (route == "4") 
-        routeValue = 1000000;
-
-    var valueTrips = routeValue * numTrips;
-
-    var passengerIn = CalculatePassengerIn(route, numPassagers, valueTrips);
-    var parcelsIn = CalculateparcelsIn(numParcelsBelow10,  numParcelsbetween10AndLess20, numParcelsAbove20, route);
+    //Calculos 
+    var passengerIn = CalculatePassengerIn(route, numPassagers, numTrips);
+    decimal parcelsIn = CalculateparcelsIn(packages10,  packages10to20, packages20plus, route);
 
     var totalIn = passengerIn + parcelsIn;
-    var payAssistant= CalculatePayAssistant(totalIn);
-    var paySecure = CalculatePaySecure (totalIn);
-    var payFuel = CalculatePayFuel(numPassagers, numParcelsBelow10, numParcelsbetween10AndLess20, numParcelsAbove20, route);
+    decimal payAssistant = CalculatePayAssistant(totalIn);
+
+    decimal paySecure = CalculatePaySecure(totalIn);
+    decimal payFuel = CalculatePayFuel(numPassagers, packages10, packages10to20, packages20plus, route, numTrips);
 
     var TotalDeductions = payAssistant + paySecure + payFuel;
     var TotalToSettled = totalIn - TotalDeductions;
 
     Console.WriteLine("*** Calculos ***");
-    Console.WriteLine($"Ingresos por Pasajeros.........................: { valueTrips:C}");
+    Console.WriteLine($"Ingresos por Pasajeros.........................: { passengerIn:C}");
     Console.WriteLine($"Ingresos por Encomiendas.......................: { parcelsIn:C}");
     Console.WriteLine("                                                :---------------------------------------------");
     Console.WriteLine($"TOTAL INGRESOS.................................: { totalIn:C}");
@@ -79,239 +66,124 @@ do
 
 } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
 
-float CalculatePayFuel(float numPassagers, float numParcelsBelow10, float numParcelsbetween10AndLess20, float numParcelsAbove20, string route)
+decimal CalculatePayFuel(int numPassagers, int packages10, int packages10to20, int packages20plus, string route, int numTrips)
 {
-    float gallonValue = 8860;
     float km;
+    switch (route)
+    {
+        case "1":
+            km = 150 * numTrips;
+            break;
+        case "2":
+            km = 167 * numTrips;
+            break;
+        case "3":
+            km = 184 * numTrips;
+            break;
+        default:
+            km = 203 * numTrips;
+            break;  
+    }
+    
+    
+    var gallons = km / 39;
+    var value = (decimal)gallons * 8860m;
+    var weight = numPassagers * 60 + packages10 * 10 + packages10to20 * 15 + packages20plus * 20;
+    if (weight < 5000) return value;
+    else if (weight <= 10000) return value * 1.1m;
+    return value * 1.25m;
 
-    if (route == "1")
-        km = 150;
-    else if (route == "2")
-        km = 167;
-    else if (route == "3")
-        km = 184;
-    else
-        km = 203;
-
-    float weight = numPassagers * 60;
-
-    float weightParcels =
-    (numParcelsBelow10 * 10) +
-    (numParcelsbetween10AndLess20 * 20) +
-    (numParcelsAbove20 * 30);
-
-    float totalWeight = weight + weightParcels;
-    float surcharge;
-
-    if (totalWeight <= 5000)
-        surcharge = 0;
-    else if (totalWeight <= 10000)
-        surcharge = 0.10f;
-    else
-        surcharge = 0.25f;
-
-    float gallons = km / 39;
-
-    float gallonsfinal = gallons * (1 + surcharge);
-
-    float totalCost = gallonsfinal * gallonValue;
-
-    float subsidy = totalCost * 0.25f;
-
-    float payDriver = totalCost - subsidy;
-
-    return payDriver;
 }
 
-float CalculatePaySecure(float totalIn)
+decimal CalculatePaySecure(decimal totalIn)
 {
-    float percentage = 0;
-    if (totalIn < 1000000)
-        percentage = 0.03f;
-    else if (totalIn <= 2000000)
-        percentage = 0.04f;
-    else if (totalIn <= 3000000)
-        percentage = 0.06f;
-    else
-        percentage = 0.09f;
-    return totalIn * percentage;
+    if (totalIn < 1000000) return totalIn * 0.03m;
+    if (totalIn < 2000000) return totalIn * 0.04m;
+    if (totalIn < 4000000) return totalIn * 0.06m;
+    return totalIn * 0.09m;
 }
 
-float CalculatePayAssistant(float totalIn)
+decimal CalculatePayAssistant(decimal totalIn)
 {
-    float percentage = 0;
-    if (totalIn < 1000000)
-        percentage = 0.05f;
-    else if (totalIn <= 2000000)
-        percentage = 0.08f;
-    else if (totalIn <= 3000000)
-        percentage = 0.10f;
-    else
-        percentage = 0.13f;
-    return totalIn * percentage;
+    if (totalIn < 1000000) return totalIn * 0.05m;
+    if (totalIn < 2000000) return totalIn * 0.08m;
+    if (totalIn < 4000000) return totalIn * 0.1m;
+    return totalIn * 0.13m;
 }
 
-float CalculateparcelsIn(int numParcelsBelow10, int numParcelsbetween10AndLess20, int numParcelsAbove20, string route)
+decimal CalculateparcelsIn(int packages10, int packages10to20, int packages20plus, string route)
 {
+    decimal value = 0;
+    switch (route)
     {
-        int totalPackages = numParcelsBelow10 +
-                            numParcelsbetween10AndLess20 +
-                            numParcelsAbove20;
+        case "1":
+        case "2":
+            if (packages10 <= 50) value += packages10 * 100;
+            else if (packages10 <= 100) value += packages10 * 120;
+            else if (packages10 <= 130) value += packages10 * 150;
+            else value += packages10 * 160;
+            var packagesGreater10 = packages10to20 + packages20plus;
 
-        float priceBelow10 = 0;
-        float priceBetween10And20 = 0;
-        float priceAbove20 = 0;
+            if (packagesGreater10 <= 50) value += packagesGreater10 * 120;
+            else if (packagesGreater10 <= 100) value += packagesGreater10 * 140;
+            else if (packagesGreater10 <= 130) value += packagesGreater10 * 160;
+            else value += packagesGreater10 * 180;
 
-        bool isRoute12 = route == "1" || route == "2";
+            return value;
+        default: 
 
-        if (totalPackages < 50)
-        {
-            if (isRoute12)
-            {
-                priceBelow10 = 100;
-                priceBetween10And20 = 120;  
-                priceAbove20 = 120;         
-            }
-            else
-            {
-                priceBelow10 = 130;
-                priceBetween10And20 = 140;
-                priceAbove20 = 170;
-            }
-        }
-        else if (totalPackages <= 100)
-        {
-            if (isRoute12)
-            {
-                priceBelow10 = 120;
-                priceBetween10And20 = 140;
-                priceAbove20 = 140;
-            }
-            else
-            {
-                priceBelow10 = 160;
-                priceBetween10And20 = 180;
-                priceAbove20 = 210;
-            }
-        }
-        else if (totalPackages <= 130)
-        {
-            if (isRoute12)
-            {
-                priceBelow10 = 150;
-                priceBetween10And20 = 160;
-                priceAbove20 = 160;
-            }
-            else
-            {
-                priceBelow10 = 175;
-                priceBetween10And20 = 200;
-                priceAbove20 = 250;
-            }
-        }
-        else
-        {
-            if (isRoute12)
-            {
-                priceBelow10 = 160;
-                priceBetween10And20 = 180;
-                priceAbove20 = 180;
-            }
-            else
-            {
-                priceBelow10 = 200;
-                priceBetween10And20 = 250;
-                priceAbove20 = 300;
-            }
-        }
+            if (packages10 <= 50) value += packages10 * 130;
+            else if (packages10 <= 100) value += packages10 * 160;
+            else if (packages10 <= 130) value += packages10 * 175;
+            else value += packages10 * 200;
 
-        float total =
-            (numParcelsBelow10 * priceBelow10) +
-            (numParcelsbetween10AndLess20 * priceBetween10And20) +
-            (numParcelsAbove20 * priceAbove20);
+            if (packages10to20 <= 50) value += packages10to20 * 140;
+            else if (packages10to20 <= 100) value += packages10to20 * 180;
+            else if (packages10to20 <= 130) value += packages10to20 * 200;
+            else value += packages10to20 * 250;
 
-        return total;
+            if (packages20plus <= 50) value += packages20plus * 170;
+            else if (packages20plus <= 100) value += packages20plus* 210;
+            else if (packages20plus <= 130) value += packages20plus * 250;
+            else value += packages20plus * 300;
+
+            return value;
     }
-
 }
-float CalculatePassengerIn(string route, int numPassengers, float valueTrips)
+decimal CalculatePassengerIn(string route, int numPassengers, int numTrips)
 {
-    float percentage = 0;
-    float extraMoney = 0;
-
-    if (route == "1")
+    decimal value;
+    switch (route)
     {
-        if (numPassengers <= 50)
-            percentage = 0f;
-
-        else if (numPassengers <= 100)
-            percentage = 0.05f;
-
-        else if (numPassengers <= 150)
-            percentage = 0.06f;
-
-        else if (numPassengers <= 200)
-            percentage = 0.07f;
-
-        else
-        {
-            percentage = 0.07f;
-            int extraPassengers = numPassengers - 200;
-            extraMoney = extraPassengers * 50;
-        }
+        case "1":
+            value = 500000m * numTrips;
+            if (numPassengers <= 50) return value;
+            if (numPassengers <= 100) return value * 1.05m;
+            if (numPassengers <= 150) return value * 1.06m;
+            if (numPassengers <= 200) return value * 1.07m;
+            return value * 1.07m + (numPassengers - 200) * 50m;
+        case "2":
+            value = 600000m * numTrips;
+            if (numPassengers <= 50) return value;
+            if (numPassengers <= 100) return value * 1.07m;
+            if (numPassengers <= 150) return value * 1.08m;
+            if (numPassengers <= 200) return value * 1.09m;
+            return value * 1.07m + (numPassengers - 200) * 60m;
+        case "3":
+            value = 800000m * numTrips;
+            if (numPassengers <= 50) return value;
+            if (numPassengers <= 100) return value * 1.1m;
+            if (numPassengers <= 150) return value * 1.13m;
+            if (numPassengers <= 200) return value * 1.15m;
+            return value * 1.15m + (numPassengers - 200) * 100m;
+        default:
+            value = 1000000m * numTrips;
+            if (numPassengers <= 50) return value;
+            if (numPassengers <= 100) return value * 1.125m;
+            if (numPassengers <= 150) return value * 1.15m;
+            if (numPassengers <= 200) return value * 1.17m;
+            return value * 1.17m + (numPassengers - 200) * 150m;
     }
-    else if (route == "2")
-    {
-        if (numPassengers <= 50)
-            percentage = 0f;
-        else if (numPassengers <= 100)
-            percentage = 0.07f;
-        else if (numPassengers <= 150)
-            percentage = 0.08f;
-        else if (numPassengers <= 200)
-            percentage = 0.09f;
-        else
-        {
-            percentage = 0.09f;
-            int extraPassengers = numPassengers - 200;
-            extraMoney = extraPassengers * 60;
-        }
-    }
-   else  if (route == "3")
-    {
-        if (numPassengers <= 50)
-            percentage = 0f;
-        else if (numPassengers <= 100)
-            percentage = 0.10f;
-        else if (numPassengers <= 150)
-            percentage = 0.13f;
-        else if (numPassengers <= 200)
-            percentage = 0.15f;
-        else
-        {
-            percentage = 0.15f;
-            int extraPassengers = numPassengers - 200;
-            extraMoney = extraPassengers * 100;
-        }
-    }
-    else if (route == "4")
-    {
-        if (numPassengers <= 50)
-            percentage = 0f;
-        else if (numPassengers <= 100)
-            percentage = 0.125f;
-        else if (numPassengers <= 150)
-            percentage = 0.15f;
-        else if (numPassengers <= 200)
-            percentage = 0.17f;
-        else
-        {
-            percentage = 0.17f;
-            int extraPassengers = numPassengers - 200;
-            extraMoney = extraPassengers * 150;
-        }
-    }
-    return (valueTrips * percentage) + extraMoney;
 
 }
 
