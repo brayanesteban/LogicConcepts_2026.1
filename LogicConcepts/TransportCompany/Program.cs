@@ -50,13 +50,27 @@ do
     var passengerIn = CalculatePassengerIn(route, numPassagers, valueTrips);
     var parcelsIn = CalculateparcelsIn(numParcelsBelow10,  numParcelsbetween10AndLess20, numParcelsAbove20, route);
 
-    var TotalIn = passengerIn + parcelsIn;
-    var payAssistant;
-    var paySecure;
-    var payFuel;
+    var totalIn = passengerIn + parcelsIn;
+    var payAssistant= CalculatePayAssistant(totalIn);
+    var paySecure = CalculatePaySecure (totalIn);
+    var payFuel = CalculatePayFuel(numPassagers, numParcelsBelow10, numParcelsbetween10AndLess20, numParcelsAbove20, route);
 
-    var TotalDeductions;
-    var TotalToSettled;
+    var TotalDeductions = payAssistant + paySecure + payFuel;
+    var TotalToSettled = totalIn - TotalDeductions;
+
+    Console.WriteLine("*** Calculos ***");
+    Console.WriteLine($"Ingresos por Pasajeros.........................: { valueTrips:C}");
+    Console.WriteLine($"Ingresos por Encomiendas.......................: { parcelsIn:C}");
+    Console.WriteLine("                                                :---------------------------------------------");
+    Console.WriteLine($"TOTAL INGRESOS.................................: { totalIn:C}");
+    Console.WriteLine($"Pago al Ayudante...............................: { payAssistant:C}");
+    Console.WriteLine($"Pago Seguro....................................: {paySecure:C}");
+    Console.WriteLine($"Pago Combustible...............................: {payFuel:C}");
+    Console.WriteLine("                                                :---------------------------------------------");
+    Console.WriteLine($"TOTAL DEDUCCIONES..............................: { TotalDeductions:C}");
+    Console.WriteLine("                                                :---------------------------------------------");
+    Console.WriteLine($"TOTAL A LIQUIDAR...............................: { TotalToSettled:C}");
+
 
     do
     {
@@ -64,6 +78,78 @@ do
     } while (!options.Any(x => string.Equals(x, answer, StringComparison.CurrentCultureIgnoreCase)));
 
 } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
+
+float CalculatePayFuel(float numPassagers, float numParcelsBelow10, float numParcelsbetween10AndLess20, float numParcelsAbove20, string route)
+{
+    float gallonValue = 8860;
+    float km;
+
+    if (route == "1")
+        km = 150;
+    else if (route == "2")
+        km = 167;
+    else if (route == "3")
+        km = 184;
+    else
+        km = 203;
+
+    float weight = numPassagers * 60;
+
+    float weightParcels =
+    (numParcelsBelow10 * 10) +
+    (numParcelsbetween10AndLess20 * 20) +
+    (numParcelsAbove20 * 30);
+
+    float totalWeight = weight + weightParcels;
+    float surcharge;
+
+    if (totalWeight <= 5000)
+        surcharge = 0;
+    else if (totalWeight <= 10000)
+        surcharge = 0.10f;
+    else
+        surcharge = 0.25f;
+
+    float gallons = km / 39;
+
+    float gallonsfinal = gallons * (1 + surcharge);
+
+    float totalCost = gallonsfinal * gallonValue;
+
+    float subsidy = totalCost * 0.25f;
+
+    float payDriver = totalCost - subsidy;
+
+    return payDriver;
+}
+
+float CalculatePaySecure(float totalIn)
+{
+    float percentage = 0;
+    if (totalIn < 1000000)
+        percentage = 0.03f;
+    else if (totalIn <= 2000000)
+        percentage = 0.04f;
+    else if (totalIn <= 3000000)
+        percentage = 0.06f;
+    else
+        percentage = 0.09f;
+    return totalIn * percentage;
+}
+
+float CalculatePayAssistant(float totalIn)
+{
+    float percentage = 0;
+    if (totalIn < 1000000)
+        percentage = 0.05f;
+    else if (totalIn <= 2000000)
+        percentage = 0.08f;
+    else if (totalIn <= 3000000)
+        percentage = 0.10f;
+    else
+        percentage = 0.13f;
+    return totalIn * percentage;
+}
 
 float CalculateparcelsIn(int numParcelsBelow10, int numParcelsbetween10AndLess20, int numParcelsAbove20, string route)
 {
