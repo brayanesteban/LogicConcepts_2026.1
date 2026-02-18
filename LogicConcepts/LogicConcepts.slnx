@@ -32,6 +32,9 @@
   <Folder Name="/11/">
     <Project Path="TransportCompany/TransportCompany.csproj" Id="68d2ded2-9e45-42f4-a0ee-8e6ca1b01c8b" />
   </Folder>
+  <Folder Name="/12/">
+    <Project Path="SeriesOfNumbers/SeriesOfNumbers.csproj" Id="72b5214f-b365-437e-b5ad-55d41af2d41c" />
+  </Folder>
   <Folder Name="/Shared/">
     <Project Path="ClassLibrary/ClassLibrary.csproj" />
   </Folder>
