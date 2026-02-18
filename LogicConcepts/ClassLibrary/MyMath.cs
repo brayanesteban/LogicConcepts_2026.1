@@ -7,9 +7,9 @@ namespace ClassLibrary
 {
    public class MyMath
     {
-        public static BigInteger Factorial (int n)
+        public static double Factorial (int n)
         {
-            BigInteger factorial = 1;
+            double factorial = 1;
             for (int i = 2; i <= n; i++)
             {
                 factorial *= i; 

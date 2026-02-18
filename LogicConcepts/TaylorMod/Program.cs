@@ -10,8 +10,8 @@ var options = new List<string> { "si", "no" };
 
 do
 {
-var n = ConsoleExtensions.GetInt("cuantos terminos desea: ");
-var x = ConsoleExtensions.GetDouble("Ingrese el valor de x: ");
+    var n = ConsoleExtensions.GetInt("cuantos terminos desea: ");
+    var x = ConsoleExtensions.GetDouble("Ingrese el valor de x: ");
 
     var taylor = Taylor(x, n);
 
@@ -28,11 +28,16 @@ var x = ConsoleExtensions.GetDouble("Ingrese el valor de x: ");
 
 double Taylor(double x, int n)
 {
-    double sum = 0;
+    double sum = 1;
     for (int i = 0; i < n; i++)
     {
         sum += Math.Pow(x, i) / MyMath.Factorial(i);
+      if (i % 2 != 0)
+        {
+            sum -= Math.Pow(x, i) / MyMath.Factorial(i);
+        }
     }
+    
     return sum;
 }
 
