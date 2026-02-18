@@ -5,17 +5,18 @@ var options = new List<string> { "si", "no" };
 
 do
 {
-  var n = ConsoleExtensions.GetInt("Cuantos numeros desea: ");
-    int sum = 0;
+  var n = ConsoleExtensions.GetInt("Cuantos números desea: ");
+    float sum = 0;
 
     for (int i = 1; i  <= n; i++)
     {
-        Console.WriteLine($"{i}\t");
+        Console.Write($"{i}\t");
         sum += i;   
     }
+    var average = sum / n; 
     Console.WriteLine();
     Console.WriteLine($"La suma de los numeros es: {sum,20:N0}");
-    Console.WriteLine($"El promedio de los numeros es: {sum / n,20:N2}");
+    Console.WriteLine($"El promedio de los numeros es: {average,20:N2}");
 
 
     do
