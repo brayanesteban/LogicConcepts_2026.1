@@ -10,9 +10,9 @@ var options = new List<string> { "si", "no" };
 
 do
 {
-    var a = ConsoleExtensions.GetInt("Ingrese el valor de a: ");
-    var b = ConsoleExtensions.GetInt("Ingrese el valor de b: ");
-    var c = ConsoleExtensions.GetInt("Ingrese el valor de c: ");
+    var a = ConsoleExtensions.GetDouble("Ingrese el valor de a: ");
+    var b = ConsoleExtensions.GetDouble("Ingrese el valor de b: ");
+    var c = ConsoleExtensions.GetDouble("Ingrese el valor de c: ");
 
     Quadratic(a, b, c);
 
@@ -23,7 +23,7 @@ do
 
 } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
 
-void Quadratic(int a, int b, int c)
+void Quadratic(double a, double b, double c)
 {
     double discriminante = b * b - 4 * a * c;
     double x1 = (-b + Math.Sqrt(discriminante)) / (2 * a);
