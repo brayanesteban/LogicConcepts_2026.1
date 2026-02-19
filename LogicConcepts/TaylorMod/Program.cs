@@ -28,14 +28,12 @@ do
 
 double Taylor(double x, int n)
 {
-    double sum = 1;
+    double sum = 0;
+    int signo = 1;
     for (int i = 0; i < n; i++)
     {
-        sum += Math.Pow(x, i) / MyMath.Factorial(i);
-      if (i % 2 != 0)
-        {
-            sum -= Math.Pow(x, i) / MyMath.Factorial(i);
-        }
+        sum += Math.Pow(x, i) / MyMath.Factorial(i) * signo;
+        signo *= -1;
     }
     
     return sum;
