@@ -26,6 +26,7 @@ do
 
 } while (answer!.Equals("si", StringComparison.CurrentCultureIgnoreCase));
 
+Console.WriteLine("Game Over");
 double Taylor(double x, int n)
 {
     double sum = 0;
@@ -39,4 +40,3 @@ double Taylor(double x, int n)
     return sum;
 }
 
-Console.WriteLine("Game Over");
